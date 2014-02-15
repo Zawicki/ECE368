@@ -4,9 +4,10 @@
 
 long * Load_File(char * Filename, int * Size);
 int Save_File(char * Filename, long * Array, int Size);
-void Shell Insertion Sort(long *Array, int Size, double *N Comp, double *N Move);
-void Shell Selection Sort(long *Array, int Size, double *N Comp, double *N Move);
-int Print Seq(char *Filename, int Size);
+void Shell_Insertion_Sort(long * Array, int Size, double * N_Comp, double * N_Move);
+void Shell_Selection_Sort(long * Array, int Size, double * N_Comp, double * N_Move);
+int Print_Seq(char * Filename, int Size);
+int * Gen_K_Seq(int Size);
 
 int main (int argc, char ** argv)
 {
@@ -27,9 +28,9 @@ int main (int argc, char ** argv)
 	double * N_Move;
 
 	if (strcmp(argv[1], "i") == 0)
-		Shell_Insertion(arr, Size, N_Comp, N_Move);
+		Shell_Insertion_Sort(arr, Size, N_Comp, N_Move);
 	else if (strcmp(argv[1], "i") == 0)
-		Shell_Selection(arr, Size, N_Comp, N_Move);
+		Shell_Selection_Sort(arr, Size, N_Comp, N_Move);
 	else
 		printf("\nInvalid argument for sort type");
 	
