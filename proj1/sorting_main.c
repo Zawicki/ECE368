@@ -24,7 +24,7 @@ int main (int argc, char ** argv)
 	long * arr;
 	arr = Load_File(in_file, &Size); //Load the fille and store the contents in arr
 
-	double * N_Comp;
+	/*double * N_Comp;
 	double * N_Move;
 
 	if (strcmp(argv[1], "i") == 0)
@@ -33,9 +33,10 @@ int main (int argc, char ** argv)
 		Shell_Selection_Sort(arr, Size, N_Comp, N_Move);
 	else
 		printf("\nInvalid argument for sort type");
-	
-	int num_saved;
-	num_saved = Save_File(out_file, arr, Size);
+	*/	
+	num_saved = Print_Seq(seq_file, Size);
+
+	Save_File(out_file, arr, Size);
 	
 	free(arr);
 

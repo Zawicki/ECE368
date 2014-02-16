@@ -53,18 +53,18 @@ int Save_File(char * Filename, long * Array, int Size)
 	return num_writes;
 }
 
-void Shell_Insertion_Sort(long * Array, int Size, double * N_Comp, double * N_Move)
+/*void Shell_Insertion_Sort(long * Array, int Size, double * N_Comp, double * N_Move)
 {
 	int * k;
 	int k_size;
 	k_Size = Gen_K_Seq(k, Size);
-}
+}*/
 
 int Gen_K_Seq(int * arr, int Size)
 {
 	//find the largest k needed for the k sequence
 	int last_k = 1;
-	while(last_k*3 < size)
+	while(last_k*3 < Size)
 	{
 		last_k *= 3;
 	}
@@ -77,15 +77,13 @@ int Gen_K_Seq(int * arr, int Size)
 	int j; //keeps track of number of multiplications for finding the exponents of the k triangle
 
 	int ind = -1;
-
 	do
 	{
 		for (i = 1; i <= k_seq_line_num; i++)
 		{
 			ind++;
-			arr = malloc(sizeof(int));
+			arr = (int *)realloc(arr, (ind + 1) * sizeof(int));
 			arr[ind] = 1;
-			
 			p = k_seq_line_num - i;
 			q = i - 1;
 
@@ -105,7 +103,7 @@ int Gen_K_Seq(int * arr, int Size)
 				j++;
 			}
 		}
-		k_seq_line_number++;
+		k_seq_line_num++;
 	}while(arr[ind] != last_k);
 
 	return ind + 1; //returns the size of the array
@@ -113,22 +111,23 @@ int Gen_K_Seq(int * arr, int Size)
 
 int Print_Seq(char * Filename, int Size)
 {
-	int * k;
-	int k_size;
+	int * k = malloc(sizeof(int));
+	int k_Size;
 	k_Size = Gen_K_Seq(k, Size);
 
 	FILE * f = fopen(Filename, "w");
 
 	if (f == NULL)
 		return 0;
-
-	fprintf(f, "%d\n", k_size);
+	fprintf(f, "%d\n", k_Size);
 
 	int i;
 	for (i = 0; i < k_Size; i++)
 	{
-		fprintf(f, "%d\n", arr[i]);
+		fprintf(f, "%d\n", k[i]);
 	}
 
-	return k_Size
+	free(k);
+
+	return k_Size;
 }
