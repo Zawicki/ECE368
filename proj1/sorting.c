@@ -103,37 +103,33 @@ int Gen_K_Seq(int * arr, int Size)
 
 void Shell_Insertion_Sort(long * Array, int Size, double * N_Comp, double * N_Move)
 {
-	//printf("\nStart Shell Insertion Sort\n");
 	int * k = malloc(sizeof(int));
 	int k_Size;
 	k_Size = Gen_K_Seq(k, Size);
-	//printf("\nK Seq Generated\n");
 	
 	int k_ind;
 	int j;
 	int i;
 	int temp;
 
-	//printf("\nStart Sorting\n");
 	for (k_ind = k_Size - 1; k_ind >= 0; k_ind--)
 	{
 		for (j = k[k_ind]; j < Size; j++)
 		{
 			temp = Array[j];
-			N_Move++;
+			(*N_Move)++;
 			i = j;
 			while((i >= k[k_ind]) && (Array[i - k[k_ind]] > temp))
 			{
-				N_Comp++;
+				(*N_Comp)++;
 				Array[i] = Array[i - k[k_ind]];
-				N_Move++;
+				(*N_Move)++;
 				i = i - k[k_ind];
 			}
 			Array[i] = temp;
-			N_Move++;
+			(*N_Move)++;
 		}
 	}
-	//printf("\nEnd Sorting\n");
 
 	free(k);
 }

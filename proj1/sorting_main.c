@@ -29,12 +29,9 @@ int main (int argc, char ** argv)
 	double N_Comp = 0;
 	double N_Move = 0;
 
-	//if (strcmp(mode, "i") == 0)
 	if (*mode == 'i')
 	{
-		printf("\nStarting Sort\n");
 		Shell_Insertion_Sort(arr, Size, &N_Comp, &N_Move);
-		printf("\nSort Complete\n\n");
 	}
 	/*else if (strcmp(argv[1], "i") == 0)
 		Shell_Selection_Sort(arr, Size, N_Comp, N_Move);
