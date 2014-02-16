@@ -42,7 +42,6 @@ int Save_File(char * Filename, long * Array, int Size)
 	int i = 0;
 	while (i < Size)
 	{
-		//printf("\n%ld", Array[i]);
 		if (fprintf(f, "%ld\n", Array[i]) > 0)
 			num_writes++;
 		i++;
@@ -52,13 +51,6 @@ int Save_File(char * Filename, long * Array, int Size)
 	
 	return num_writes;
 }
-
-/*void Shell_Insertion_Sort(long * Array, int Size, double * N_Comp, double * N_Move)
-{
-	int * k;
-	int k_size;
-	k_Size = Gen_K_Seq(k, Size);
-}*/
 
 int Gen_K_Seq(int * arr, int Size)
 {
@@ -107,6 +99,43 @@ int Gen_K_Seq(int * arr, int Size)
 	}while(arr[ind] != last_k);
 
 	return ind + 1; //returns the size of the array
+}
+
+void Shell_Insertion_Sort(long * Array, int Size, double * N_Comp, double * N_Move)
+{
+	//printf("\nStart Shell Insertion Sort\n");
+	int * k = malloc(sizeof(int));
+	int k_Size;
+	k_Size = Gen_K_Seq(k, Size);
+	//printf("\nK Seq Generated\n");
+	
+	int k_ind;
+	int j;
+	int i;
+	int temp;
+
+	//printf("\nStart Sorting\n");
+	for (k_ind = k_Size - 1; k_ind >= 0; k_ind--)
+	{
+		for (j = k[k_ind]; j < Size; j++)
+		{
+			temp = Array[j];
+			N_Move++;
+			i = j;
+			while((i >= k[k_ind]) && (Array[i - k[k_ind]] > temp))
+			{
+				N_Comp++;
+				Array[i] = Array[i - k[k_ind]];
+				N_Move++;
+				i = i - k[k_ind];
+			}
+			Array[i] = temp;
+			N_Move++;
+		}
+	}
+	//printf("\nEnd Sorting\n");
+
+	free(k);
 }
 
 int Print_Seq(char * Filename, int Size)

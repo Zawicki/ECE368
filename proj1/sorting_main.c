@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 long * Load_File(char * Filename, int * Size);
 int Save_File(char * Filename, long * Array, int Size);
@@ -17,28 +16,38 @@ int main (int argc, char ** argv)
 		return EXIT_FAILURE;
 	}
 
+	char * mode = argv[1];
 	char * in_file = argv[2];
-	char * seq_file = argv[3];
+	//char * seq_file = argv[3];
 	char * out_file = argv[4];
+
 	int Size = 0;	
 	long * arr;
+	
 	arr = Load_File(in_file, &Size); //Load the fille and store the contents in arr
 
-	/*double * N_Comp;
-	double * N_Move;
+	double N_Comp = 0;
+	double N_Move = 0;
 
-	if (strcmp(argv[1], "i") == 0)
-		Shell_Insertion_Sort(arr, Size, N_Comp, N_Move);
-	else if (strcmp(argv[1], "i") == 0)
+	//if (strcmp(mode, "i") == 0)
+	if (*mode == 'i')
+	{
+		printf("\nStarting Sort\n");
+		Shell_Insertion_Sort(arr, Size, &N_Comp, &N_Move);
+		printf("\nSort Complete\n\n");
+	}
+	/*else if (strcmp(argv[1], "i") == 0)
 		Shell_Selection_Sort(arr, Size, N_Comp, N_Move);
 	else
-		printf("\nInvalid argument for sort type");
-	*/	
-	num_saved = Print_Seq(seq_file, Size);
-
-	Save_File(out_file, arr, Size);
+		printf("\nInvalid argument for sort type");*/
 	
+	Save_File(out_file, arr, Size);
 	free(arr);
+
+	printf("Number of comparisons: %le\n", N_Comp);
+	printf("Number of moves: %le\n", N_Move);
+	printf("I/O Time: %le\n", (double)0);
+	printf("Sorting Time: %le\n", (double)0);
 
 	return EXIT_SUCCESS;
 }
