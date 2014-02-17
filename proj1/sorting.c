@@ -126,6 +126,7 @@ void Shell_Insertion_Sort(long * Array, int Size, double * N_Comp, double * N_Mo
 				(*N_Move)++;
 				i = i - k[k_ind];
 			}
+			(*N_Comp)++;
 			Array[i] = temp;
 			(*N_Move)++;
 		}
