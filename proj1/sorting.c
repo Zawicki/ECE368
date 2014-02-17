@@ -107,10 +107,10 @@ void Shell_Insertion_Sort(long * Array, int Size, double * N_Comp, double * N_Mo
 	int k_Size;
 	k_Size = Gen_K_Seq(k, Size);
 	
-	int k_ind;
+	int k_ind; //the index of the current for the current element in the array k
 	int j;
 	int i;
-	int temp;
+	long temp;
 
 	for (k_ind = k_Size - 1; k_ind >= 0; k_ind--)
 	{
@@ -134,6 +134,41 @@ void Shell_Insertion_Sort(long * Array, int Size, double * N_Comp, double * N_Mo
 	free(k);
 }
 
+void Shell_Selection_Sort(long * Array, int Size, double * N_Comp, double * N_Move)
+{
+	int * k = malloc(sizeof(int));
+	int k_Size;
+	k_Size = Gen_K_Seq(k, Size);
+	
+	int k_ind; //the index of the current for the current element in the array k
+	int min_ind;
+	int j;
+	int i;
+	long temp;
+
+	for (k_ind = k_Size - 1; k_ind >= 0; k_ind--)
+	{
+		for (j = 0; j < Size; j++)
+		{
+			min_ind = j;
+			for (i = j + k[k_ind]; i < Size; i++)
+			{
+				if(Array[i] < Array[min_ind])
+					min_ind = i;
+				(*N_Comp)++;
+			}
+			if (min_ind != j)
+			{
+				temp = Array[j];
+				Array[j] = Array[min_ind];
+				Array[min_ind] = temp;
+				*N_Move += 3;
+			}
+		}
+	}
+
+	free(k);
+}
 int Print_Seq(char * Filename, int Size)
 {
 	int * k = malloc(sizeof(int));

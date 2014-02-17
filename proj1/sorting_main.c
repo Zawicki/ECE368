@@ -30,13 +30,11 @@ int main (int argc, char ** argv)
 	double N_Move = 0;
 
 	if (*mode == 'i')
-	{
 		Shell_Insertion_Sort(arr, Size, &N_Comp, &N_Move);
-	}
-	/*else if (strcmp(argv[1], "i") == 0)
-		Shell_Selection_Sort(arr, Size, N_Comp, N_Move);
+	else if (*mode == 's')
+		Shell_Selection_Sort(arr, Size, &N_Comp, &N_Move);
 	else
-		printf("\nInvalid argument for sort type");*/
+		printf("\nInvalid argument for sort type");
 	
 	Save_File(out_file, arr, Size);
 	free(arr);
