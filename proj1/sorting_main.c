@@ -17,6 +17,7 @@ int main (int argc, char ** argv)
 		return EXIT_FAILURE;
 	}
 
+	//Assign inputs to variables
 	char * mode = argv[1];
 	char * in_file = argv[2];
 	char * seq_file = argv[3];
@@ -25,11 +26,10 @@ int main (int argc, char ** argv)
 	int Size = 0;	
 	long * arr;
 
-
 	double N_Comp = 0;
 	double N_Move = 0;
 
-	clock_t sort_t = 0;
+	clock_t sort_t = 0; //keeps track of sort time
 	clock_t io_sum = 0; //keeps track of total I/O time
 	
 	clock_t io = clock();
@@ -49,7 +49,10 @@ int main (int argc, char ** argv)
 		sort_t = clock() - sort_t;
 	}
 	else
+	{
 		printf("\nInvalid argument for sort type");
+		return EXIT_FAILURE;
+	}
 
 	io = clock();
 	Print_Seq(seq_file, Size);	

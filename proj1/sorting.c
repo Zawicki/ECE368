@@ -52,9 +52,18 @@ int Save_File(char * Filename, long * Array, int Size)
 	return num_writes;
 }
 
+/*
+ * Generates the k sequence used for shell sort
+ * Inputs:
+ * 	1. A pointer to the size of the k sequence (its value doesn't matter)
+ * 	2. The number of elements to be sorted
+ *
+ * Outputs:
+ * 	A pointer to an array holding the k sequence
+ */
 int * Gen_K_Seq(int * arr_Size, int Size)
 {
-	//find the largest k needed for the k sequence
+	//find the largest k needed for the k sequence as well as the number of elements to be stored in the array
 	int last_k = 1;
 	int n = 0;
 	int k_Size = 1;
@@ -102,7 +111,8 @@ int * Gen_K_Seq(int * arr_Size, int Size)
 		}
 		k_seq_line_num++;
 	}while(arr[ind] != last_k);
-	(*arr_Size) = k_Size;
+
+	(*arr_Size) = k_Size; //allows the size of the array to be known outside of this frame
 	return arr; //returns the size of the array
 }
 
@@ -111,7 +121,7 @@ void Shell_Insertion_Sort(long * Array, int Size, double * N_Comp, double * N_Mo
 	int k_Size = 0;
 	int * k = Gen_K_Seq(&k_Size, Size);
 	
-	int k_ind; //the index of the current for the current element in the array k
+	int k_ind; //the index for the current element in the array k
 	int j;
 	int i;
 	long temp;
@@ -130,7 +140,8 @@ void Shell_Insertion_Sort(long * Array, int Size, double * N_Comp, double * N_Mo
 				(*N_Move)++;
 				i = i - k[k_ind];
 			}
-			(*N_Comp)++;
+			if (i >= k[k_ind])
+				(*N_Comp)++;
 			Array[i] = temp;
 			(*N_Move)++;
 		}
@@ -144,7 +155,7 @@ void Shell_Selection_Sort(long * Array, int Size, double * N_Comp, double * N_Mo
 	int k_Size;
 	int * k = Gen_K_Seq(&k_Size, Size);
 	
-	int k_ind; //the index of the current for the current element in the array k
+	int k_ind; //the index for the current element in the array k
 	int min_ind;
 	int j;
 	int i;
@@ -173,6 +184,7 @@ void Shell_Selection_Sort(long * Array, int Size, double * N_Comp, double * N_Mo
 
 	free(k);
 }
+
 int Print_Seq(char * Filename, int Size)
 {
 	int k_Size;
