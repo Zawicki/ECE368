@@ -52,14 +52,20 @@ int Save_File(char * Filename, long * Array, int Size)
 	return num_writes;
 }
 
-int Gen_K_Seq(int * arr, int Size)
+int * Gen_K_Seq(int * arr_Size, int Size)
 {
 	//find the largest k needed for the k sequence
 	int last_k = 1;
+	int n = 0;
+	int k_Size = 1;
 	while(last_k*3 < Size)
 	{
 		last_k *= 3;
+		n++;
+		k_Size += n + 1;
 	}
+
+	int * arr = malloc(sizeof(int) * k_Size);
 
 	int k_seq_line_num = 1; //the current line number of the k sequence triangle
 	int i; //the current column number of k sequence triangle
@@ -74,7 +80,6 @@ int Gen_K_Seq(int * arr, int Size)
 		for (i = 1; i <= k_seq_line_num; i++)
 		{
 			ind++;
-			arr = (int *)realloc(arr, (ind + 1) * sizeof(int));
 			arr[ind] = 1;
 			p = k_seq_line_num - i;
 			q = i - 1;
@@ -97,25 +102,24 @@ int Gen_K_Seq(int * arr, int Size)
 		}
 		k_seq_line_num++;
 	}while(arr[ind] != last_k);
-
-	return ind + 1; //returns the size of the array
+	(*arr_Size) = k_Size;
+	return arr; //returns the size of the array
 }
 
 void Shell_Insertion_Sort(long * Array, int Size, double * N_Comp, double * N_Move)
 {
-	int * k = malloc(sizeof(int));
-	int k_Size;
-	k_Size = Gen_K_Seq(k, Size);
+	int k_Size = 0;
+	int * k = Gen_K_Seq(&k_Size, Size);
 	
 	int k_ind; //the index of the current for the current element in the array k
 	int j;
 	int i;
 	long temp;
-
 	for (k_ind = k_Size - 1; k_ind >= 0; k_ind--)
 	{
 		for (j = k[k_ind]; j < Size; j++)
 		{
+
 			temp = Array[j];
 			(*N_Move)++;
 			i = j;
@@ -131,15 +135,14 @@ void Shell_Insertion_Sort(long * Array, int Size, double * N_Comp, double * N_Mo
 			(*N_Move)++;
 		}
 	}
-
+	
 	free(k);
 }
 
 void Shell_Selection_Sort(long * Array, int Size, double * N_Comp, double * N_Move)
 {
-	int * k = malloc(sizeof(int));
 	int k_Size;
-	k_Size = Gen_K_Seq(k, Size);
+	int * k = Gen_K_Seq(&k_Size, Size);
 	
 	int k_ind; //the index of the current for the current element in the array k
 	int min_ind;
@@ -172,10 +175,9 @@ void Shell_Selection_Sort(long * Array, int Size, double * N_Comp, double * N_Mo
 }
 int Print_Seq(char * Filename, int Size)
 {
-	int * k = malloc(sizeof(int));
 	int k_Size;
-	k_Size = Gen_K_Seq(k, Size);
-
+	int * k = Gen_K_Seq(&k_Size, Size);
+	
 	FILE * f = fopen(Filename, "w");
 
 	if (f == NULL)
@@ -187,6 +189,8 @@ int Print_Seq(char * Filename, int Size)
 	{
 		fprintf(f, "%d\n", k[i]);
 	}
+
+	fclose(f);
 
 	free(k);
 
