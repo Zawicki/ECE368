@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "Running insertion sort"
+echo
+./proj1 i 1000.txt seq.txt i_output.txt
