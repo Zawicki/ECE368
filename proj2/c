@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Compiling Program"
+gcc -Werror -Wall -Wshadow -O3 sorting.c sorting_main.c -o proj2

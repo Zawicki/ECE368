@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "Running insertion sort"
+echo
+./proj2 10.txt output.txt
