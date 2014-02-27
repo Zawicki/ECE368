@@ -1,6 +1,6 @@
-#include "sorting.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "sorting.h"
 
 Node * Create_Node(long val)
 {
@@ -12,7 +12,6 @@ Node * Create_Node(long val)
 
 Node * Load_File(char *Filename)
 {
-	printf("\nLoading File\n");
 	FILE * f = fopen(Filename, "r");
 	
 	if (f ==  NULL)
@@ -40,19 +39,18 @@ Node * Load_File(char *Filename)
 
 int Save_File(char * Filename, Node * head)
 {
-	printf("\nSaving File\n");
 	FILE * f = fopen(Filename, "w");
 
 	if (f == NULL)
 		return 0;
 
 	int num_writes = 0;
-	
-	while (head != NULL)
+	Node * n = head -> next;	
+	while (n != NULL)
 	{
-		if (fprintf(f, "%ld\n", head -> value) < 0)
+		if (fprintf(f, "%ld\n", n -> value) < 0)
 			num_writes++;
-		head = head -> next;
+		n = n -> next;
 	}
 
 	fclose(f);
@@ -124,25 +122,83 @@ int * Gen_K_Seq(int * arr_Size, long Size)
 	return arr; //returns the size of the array
 }
 
-Node * Shell_Insertion_Sort(Node * head)
+Node * Shell_Sort(Node * head)
 {
+	printf("Sorting File\n");
 	//find size of list
 	int k_Size = 0;
 	int * k = Gen_K_Seq(&k_Size, head -> value);
 	
 	int k_ind; //the index for the current element in the array k
-	int j;
-	int i;
 	long temp;
-
-
+	int i;
+	int j;
+	
+	long Size = head -> value;
+	
+	Node * iter = head -> next;
+	
 	for (k_ind = k_Size - 1; k_ind >= 0; k_ind--)
 	{
+		for (j = k[k_ind]; j < Size; j++)
+		{
+			temp = Find_elem(iter, j) -> value;
+			i = j;
+
+			while ((i >= k[k_ind]) && (Find_elem(iter, i - k[k_ind]) -> value > temp))
+			{
+				Find_elem(iter, i) -> value = Find_elem(iter, i - k[k_ind]) -> value;
+				i = i - k[k_ind];
+			}
+			Find_elem(iter, i) -> value = temp;
+		}
 	}
 	
 	free(k);
 
-	return list;
+	return head;
+}
+/*
+Node * InsAfter(Node * prev, Node * n)
+{
+	n -> next = prev -> next;
+	prev -> next = n;
+	return n;
+}
+
+Node * RemAfter(Node * prev, Node * n)
+{
+	prev -> next = n -> next;
+	n -> next = NULL;
+	return n;
+}*/
+
+Node * Find_elem(Node * head, int index)
+{
+	if (index < 0)
+		return NULL;
+	
+	int i;
+	
+	Node * iter = head;
+
+	for (i = 0; i < index; i++)
+	{
+		iter = iter -> next;
+	}
+
+	return iter;
+}
+
+void Destroy_List(Node * head)
+{
+	Node * t = NULL;
+	while(head != NULL)
+	{
+		t = head -> next;
+		free(head);
+		head = t;
+	}
 }
 
 /*int Print_Seq(char * Filename, long Size)

@@ -1,7 +1,7 @@
-#include "sorting.h"
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
+#include "sorting.h"
 
 int main (int argc, char * * argv)
 {
@@ -22,15 +22,15 @@ int main (int argc, char * * argv)
 	Node * head = Load_File(in_file); //Load the fille and store the contents in arr
 	io_sum = clock() - io;
 
-	/*sort_t = clock();
-	data = Shell_Sort(data);
-	sort_t = clock() - sort_t;*/
+	sort_t = clock();
+	head = Shell_Sort(head);
+	sort_t = clock() - sort_t;
 
 	io = clock();
 	Save_File(out_file, head);
 	io_sum += clock() - io;
 
-	//function for freeing the list
+	Destroy_List(head);
 
 	printf("I/O Time: %le\n", ((double)io_sum) / CLOCKS_PER_SEC);
 	printf("Sorting Time: %le\n", ((double)sort_t) / CLOCKS_PER_SEC);
