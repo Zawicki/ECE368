@@ -48,13 +48,13 @@ int Save_File(char * Filename, Node * head)
 	Node * n = head -> next;	
 	while (n != NULL)
 	{
-		if (fprintf(f, "%ld\n", n -> value) < 0)
+		if (fprintf(f, "%ld\n", n -> value) > 0)
 			num_writes++;
 		n = n -> next;
 	}
 
 	fclose(f);
-	
+
 	return num_writes;
 }
 
@@ -130,15 +130,13 @@ Node * Shell_Sort(Node * head)
 	
 	int k_ind; //the index for the current element in the array k
 	int i;
-	int order;
+	int order; //determines if the list should be sorted in ascending or descending order
 	
 	if (k_Size % 2 == 1)
 		order = 1;
 	else
 		order = 0;
 	
-	//printf("Size = %ld, Order = %d", head -> value, order);
-
 	Node * new_head = head -> next;
 	Node * iter;
 	Node * temp;
@@ -170,6 +168,7 @@ Node * Shell_Sort(Node * head)
 			if (i == k[k_ind])
 				i = 0;
 		}
+		//Change the direction of sorting
 		if (order == 1)
 			order = 0;
 		else
@@ -186,7 +185,7 @@ Node * Shell_Sort(Node * head)
 	return head;
 }
 
-//Assemble one linked list form a set of linked list arrays
+//Assemble one linked list from the set of k sub linked lists
 Node * assemble_List(List * list, int Size)
 {
 	//printf("Assembling List\n");

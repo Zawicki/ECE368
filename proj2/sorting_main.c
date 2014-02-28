@@ -25,13 +25,12 @@ int main (int argc, char * * argv)
 	sort_t = clock();
 	head = Shell_Sort(head);
 	sort_t = clock() - sort_t;
-
+	
 	io = clock();
 	Save_File(out_file, head);
 	io_sum += clock() - io;
 
 	Destroy_List(head);
-
 	printf("I/O Time: %le\n", ((double)io_sum) / CLOCKS_PER_SEC);
 	printf("Sorting Time: %le\n", ((double)sort_t) / CLOCKS_PER_SEC);
 
