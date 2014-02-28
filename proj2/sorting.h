@@ -18,7 +18,8 @@ Node * Load_File(char * Filename);
 int Save_File(char * Filename, Node * head);
 int * Gen_K_Seq(int * arr_Size, long Size); //Generates the k sequence
 Node * Shell_Sort(Node * head);
+Node * assemble_List(List * list, int Size);
+Node * insert_Node(Node * head, Node * n);
 void Destroy_List(Node * head);
-Node * Find_elem(Node * head, int i);
 //int Print_Seq(char * Filename, long Size);
 //#endif

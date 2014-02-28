@@ -124,72 +124,136 @@ int * Gen_K_Seq(int * arr_Size, long Size)
 
 Node * Shell_Sort(Node * head)
 {
-	printf("Sorting File\n");
 	//find size of list
 	int k_Size = 0;
 	int * k = Gen_K_Seq(&k_Size, head -> value);
 	
 	int k_ind; //the index for the current element in the array k
-	long temp;
 	int i;
-	int j;
 	
-	long Size = head -> value;
-	
-	Node * iter = head -> next;
-	
+	Node * new_head = head -> next;
+	Node * iter;
+	Node * temp;
+	List * list;
+
+	printf("Starting sort\n");
 	for (k_ind = k_Size - 1; k_ind >= 0; k_ind--)
 	{
-		for (j = k[k_ind]; j < Size; j++)
+		list = malloc(sizeof(List)*k[k_ind]);
+		//initialize each element of list to NULL
+		for(i = 0; i < k[k_ind]; i++)
 		{
-			temp = Find_elem(iter, j) -> value;
-			i = j;
-
-			while ((i >= k[k_ind]) && (Find_elem(iter, i - k[k_ind]) -> value > temp))
-			{
-				Find_elem(iter, i) -> value = Find_elem(iter, i - k[k_ind]) -> value;
-				i = i - k[k_ind];
-			}
-			Find_elem(iter, i) -> value = temp;
+			list[i].node = NULL;
 		}
+
+		/*iter = new_head;
+		while (iter != NULL)
+		{
+			printf("%ld\n", iter -> value);
+			iter = iter -> next;
+		}*/
+		iter = new_head;
+		i = 0;
+		//Insert nodes into sub arrays
+		//Nodes are sorted as they are inserted
+		while (iter != NULL)
+		{
+			temp = iter -> next;
+			//printf("Inserting %ld into list[%d]\n", iter -> value, i);
+			list[i].node = insert_Node(list[i].node, iter);
+			iter = temp;
+			i++;
+			if (i == k[k_ind])
+				i = 0;
+		}
+		//reassemble the k sorted linked list
+		new_head = assemble_List(list, k[k_ind]);
+		free(list);
 	}
-	
+		
 	free(k);
+
+	head -> next = new_head;
 
 	return head;
 }
-/*
-Node * InsAfter(Node * prev, Node * n)
-{
-	n -> next = prev -> next;
-	prev -> next = n;
-	return n;
-}
 
-Node * RemAfter(Node * prev, Node * n)
+//Assemble one linked list form a set of linked list arrays
+Node * assemble_List(List * list, int Size)
 {
-	prev -> next = n -> next;
-	n -> next = NULL;
-	return n;
-}*/
-
-Node * Find_elem(Node * head, int index)
-{
-	if (index < 0)
-		return NULL;
+	//printf("Assembling List\n");
+	//printf("Size: %d\n", Size);
 	
-	int i;
-	
+	int i = 0;
+	Node * head = list[0].node;
 	Node * iter = head;
 
-	for (i = 0; i < index; i++)
+	while(iter != NULL)
 	{
+		list[i].node = list[i].node -> next;
+		if (i < Size - 1)
+			iter -> next = list[i + 1].node;
+		else if (list[0].node != NULL)
+		{
+			//printf("In else if\n");
+			//printf("list[0] = %ld\n", list[0].node -> value);
+			iter -> next = list[0].node;
+		}
+		else
+			iter -> next = NULL;
+		/*printf("list[%d] = %ld, ", i, list[i].node -> value);
+		if (list[i].node -> next == NULL)
+			printf("Next = NULL\n");
+		else
+			printf("Next = %ld\n", list[i].node -> next -> value);*/
 		iter = iter -> next;
+		i++;
+		/*if (i < 3)
+			printf("list[%d] = %ld\n", i, list[i].node -> value);
+		else
+			printf("list[%d] = %ld\n", 0, list[0].node -> value);*/
+		if (i == Size)
+			i = 0;
 	}
 
-	return iter;
+	return head;
 }
 
+//insert a node into a linked list
+Node * insert_Node(Node * head, Node * n)
+{
+	//printf("Inserting value: %ld\n", n -> value);
+	if (head ==  NULL)
+	{
+		head = n;
+		head -> next = NULL;
+		return head;
+	}
+
+	Node * prev = NULL;
+	Node * curr = head;
+	
+	while (curr != NULL && curr -> value < n -> value)
+	{
+		prev = curr;
+		curr = curr -> next;
+	}
+
+	if (prev != NULL)
+	{
+		prev -> next = n;
+		n -> next = curr;
+	}
+	else
+	{
+		n -> next = head;
+		head = n;
+	}
+
+	return head;
+}
+
+//Destroy the linked list
 void Destroy_List(Node * head)
 {
 	Node * t = NULL;
