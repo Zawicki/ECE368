@@ -19,7 +19,8 @@ int Save_File(char * Filename, Node * head);
 int * Gen_K_Seq(int * arr_Size, long Size); //Generates the k sequence
 Node * Shell_Sort(Node * head);
 Node * assemble_List(List * list, int Size);
-Node * insert_Node(Node * head, Node * n);
+Node * insert_Node_Asc(Node * head, Node * n);
+Node * insert_Node_Desc(Node * head, Node * n);
 void Destroy_List(Node * head);
 //int Print_Seq(char * Filename, long Size);
 //#endif

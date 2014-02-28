@@ -130,7 +130,15 @@ Node * Shell_Sort(Node * head)
 	
 	int k_ind; //the index for the current element in the array k
 	int i;
+	int order;
 	
+	if (k_Size % 2 == 1)
+		order = 1;
+	else
+		order = 0;
+	
+	//printf("Size = %ld, Order = %d", head -> value, order);
+
 	Node * new_head = head -> next;
 	Node * iter;
 	Node * temp;
@@ -146,12 +154,6 @@ Node * Shell_Sort(Node * head)
 			list[i].node = NULL;
 		}
 
-		/*iter = new_head;
-		while (iter != NULL)
-		{
-			printf("%ld\n", iter -> value);
-			iter = iter -> next;
-		}*/
 		iter = new_head;
 		i = 0;
 		//Insert nodes into sub arrays
@@ -159,13 +161,19 @@ Node * Shell_Sort(Node * head)
 		while (iter != NULL)
 		{
 			temp = iter -> next;
-			//printf("Inserting %ld into list[%d]\n", iter -> value, i);
-			list[i].node = insert_Node(list[i].node, iter);
+			if (order == 1)
+				list[i].node = insert_Node_Asc(list[i].node, iter);
+			else
+				list[i].node = insert_Node_Desc(list[i].node, iter);
 			iter = temp;
 			i++;
 			if (i == k[k_ind])
 				i = 0;
 		}
+		if (order == 1)
+			order = 0;
+		else
+			order = 1;
 		//reassemble the k sorted linked list
 		new_head = assemble_List(list, k[k_ind]);
 		free(list);
@@ -195,23 +203,12 @@ Node * assemble_List(List * list, int Size)
 			iter -> next = list[i + 1].node;
 		else if (list[0].node != NULL)
 		{
-			//printf("In else if\n");
-			//printf("list[0] = %ld\n", list[0].node -> value);
 			iter -> next = list[0].node;
 		}
 		else
 			iter -> next = NULL;
-		/*printf("list[%d] = %ld, ", i, list[i].node -> value);
-		if (list[i].node -> next == NULL)
-			printf("Next = NULL\n");
-		else
-			printf("Next = %ld\n", list[i].node -> next -> value);*/
 		iter = iter -> next;
 		i++;
-		/*if (i < 3)
-			printf("list[%d] = %ld\n", i, list[i].node -> value);
-		else
-			printf("list[%d] = %ld\n", 0, list[0].node -> value);*/
 		if (i == Size)
 			i = 0;
 	}
@@ -220,9 +217,8 @@ Node * assemble_List(List * list, int Size)
 }
 
 //insert a node into a linked list
-Node * insert_Node(Node * head, Node * n)
+Node * insert_Node_Asc(Node * head, Node * n)
 {
-	//printf("Inserting value: %ld\n", n -> value);
 	if (head ==  NULL)
 	{
 		head = n;
@@ -234,6 +230,38 @@ Node * insert_Node(Node * head, Node * n)
 	Node * curr = head;
 	
 	while (curr != NULL && curr -> value < n -> value)
+	{
+		prev = curr;
+		curr = curr -> next;
+	}
+
+	if (prev != NULL)
+	{
+		prev -> next = n;
+		n -> next = curr;
+	}
+	else
+	{
+		n -> next = head;
+		head = n;
+	}
+
+	return head;
+}
+
+Node * insert_Node_Desc(Node * head, Node * n)
+{
+	if (head ==  NULL)
+	{
+		head = n;
+		head -> next = NULL;
+		return head;
+	}
+
+	Node * prev = NULL;
+	Node * curr = head;
+	
+	while (curr != NULL && curr -> value > n -> value)
 	{
 		prev = curr;
 		curr = curr -> next;
