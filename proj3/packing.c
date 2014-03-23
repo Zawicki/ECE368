@@ -23,9 +23,9 @@ int main (int argc, char * * argv)
 	//the root node is the node of index num_n
 	Node * arr = Load_File(in_file, &num_b, &num_n);
 
-	Pack(arr, num_n);
+	//Pack(arr, num_n);
 
-	Delete_Nodes(arr, num_n);
+	free(arr);
 
 	return EXIT_SUCCESS;
 }
@@ -45,8 +45,9 @@ Node * Load_File(char * Filename, int * num_b, int * num_n)
 	int i;
 	int ind;
 
-	for (i = 0; i < *num_n; i++);
+	for (i = 0; i < *num_n; i++)
 	{
+		//printf("i = %d\n", i);
 		fscanf(f, "%d", &ind);
 		fscanf(f, "%d %d %d %c %lf %lf", &(&arr[ind]) -> par, &(&arr[ind]) -> lc, &(&arr[ind]) -> rc, &(&arr[ind]) -> cut, &(&arr[ind]) -> width, &(&arr[ind]) -> height);
 	}
@@ -58,10 +59,13 @@ void Pack(Node * arr, int size)
 {
 	printf("\nPreorder:  ");
 	Preorder(arr, size);
+/*	
 	printf("\n\nInorder:  ");
 	Inorder(arr, size);
-	Postorder(arr, size);
+	
 	printf("\n\nPostorder:  ");
+	Postorder(arr, size);
+*/
 }
 
 void Preorder(Node * arr, int ind)
@@ -93,16 +97,6 @@ void Postorder(Node * arr, int ind)
 		Postorder(arr, (&arr[ind]) -> rc);
 	
 	printf("%d ", ind);
-}
-
-void Delete_Nodes(Node * arr, int size)
-{
-	int i;
-	
-	for (i = 0; i < size; i++)
-	{
-		free(&arr[i]);
-	}
 }
 
 
