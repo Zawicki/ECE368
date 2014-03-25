@@ -23,7 +23,7 @@ int main (int argc, char * * argv)
 	//the root node is the node of index num_n
 	Node * arr = Load_File(in_file, &num_b, &num_n);
 
-	//Pack(arr, num_n);
+	Pack(arr, num_n);
 
 	free(arr);
 
@@ -44,12 +44,26 @@ Node * Load_File(char * Filename, int * num_b, int * num_n)
 
 	int i;
 	int ind;
+	char w;
+	char h;
 
 	for (i = 0; i < *num_n; i++)
 	{
 		//printf("i = %d\n", i);
 		fscanf(f, "%d", &ind);
-		fscanf(f, "%d %d %d %c %lf %lf", &(&arr[ind]) -> par, &(&arr[ind]) -> lc, &(&arr[ind]) -> rc, &(&arr[ind]) -> cut, &(&arr[ind]) -> width, &(&arr[ind]) -> height);
+		fscanf(f, "%d %d %d %c %c %c\n", &(&arr[ind]) -> par, &(&arr[ind]) -> lc, &(&arr[ind]) -> rc, &(&arr[ind]) -> cut, &w, &h);
+
+		if (w != '-')
+			(&arr[ind]) -> width = atoi(&w);
+		else
+			(&arr[ind]) -> width = 0;
+		
+		if (h != '-')
+			(&arr[ind]) -> height = atoi(&h);
+		else
+			(&arr[ind]) -> height = 0;
+
+		//printf("%d %d %d %c %lf %lf\n", (&arr[ind]) -> par, (&arr[ind]) -> lc, (&arr[ind]) -> rc, (&arr[ind]) -> cut, (&arr[ind]) -> width, (&arr[ind]) -> height);
 	}
 
 	return arr;
@@ -59,18 +73,20 @@ void Pack(Node * arr, int size)
 {
 	printf("\nPreorder:  ");
 	Preorder(arr, size);
-/*	
+	
 	printf("\n\nInorder:  ");
 	Inorder(arr, size);
 	
 	printf("\n\nPostorder:  ");
 	Postorder(arr, size);
-*/
 }
 
 void Preorder(Node * arr, int ind)
 {
 	printf("%d ", ind);
+
+	//printf("\nlc = %d\n", (&arr[ind]) -> lc);
+	//printf("rc = %d\n", (&arr[ind]) -> rc);
 
 	if ((&arr[ind]) -> lc != -1)
 		Preorder(arr, (&arr[ind]) -> lc);
