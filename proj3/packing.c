@@ -23,9 +23,13 @@ int main (int argc, char * * argv)
 	//the root node is the node of index num_n
 	Node * arr = Load_File(in_file, &num_b, &num_n);
 
-	Pack(arr, num_n);
+	double x_tot;
+	double y_tot;
+
+	Coord * crd = Pack(arr, num_n, num_b, &x_tot, &y_tot);
 
 	free(arr);
+	free(crd);
 
 	return EXIT_SUCCESS;
 }
@@ -40,6 +44,7 @@ Node * Load_File(char * Filename, int * num_b, int * num_n)
 	fscanf(f, "%d", num_b);
 	fscanf(f, "%d", num_n);
 
+	// a nodes id is stored as it's index
 	Node * arr = malloc(sizeof(Node) * (*num_n + 1));
 
 	int i;
@@ -69,8 +74,22 @@ Node * Load_File(char * Filename, int * num_b, int * num_n)
 	return arr;
 }
 
-void Pack(Node * arr, int size)
+Coord * Pack(Node * arr, int size, int num_b, double * x_tot, double * y_tot)
 {
+	if (size < 1)
+		return NULL;
+	
+	Coord * crd = malloc(sizeof(Coord) * (num_b + 1));
+	
+	if (size == 1)
+	{
+		*x_tot = 0;
+		*y_tot = 0;
+
+		(&crd[1]) -> x = 0;
+		(&crd[1]) -> y = 0;
+	}
+
 	printf("\nPreorder:  ");
 	Preorder(arr, size);
 	
@@ -79,14 +98,38 @@ void Pack(Node * arr, int size)
 	
 	printf("\n\nPostorder:  ");
 	Postorder(arr, size);
+
+	Find_Coords(crd, arr, size, x_tot, y_tot);
+
+	printf("\n\nWidth:  %lf", *x_tot);
+	printf("\nHeight:  %lf", *y_tot);
+	
+	printf("\n\nX-coordinate:  %lf", (&crd[num_b]) -> x);
+	printf("\nY-coordinate:  %lf", (&crd[num_b]) -> y);
+	
+	return crd;
+}
+
+void Find_Coords(Coord * crd, Node * arr, int ind, double * x_tot, double * y_tot)
+{	
+	if ((&arr[ind]) -> lc != -1)
+		Find_Coords(crd, arr, (&arr[ind]) -> lc, x_tot, y_tot);
+	if ((&arr[ind]) -> rc != -1)
+		Find_Coords(crd, arr, (&arr[ind]) -> rc, x_tot, y_tot);
+	
+	if ( (&arr[ind]) -> cut != 'V' || (&arr[ind]) -> cut != 'H')
+	{
+		(&crd[ind]) -> x = *x_tot;
+		(&crd[ind]) -> y = *y_tot;
+
+		*x_tot += (&arr[ind]) -> width;
+		*y_tot += (&arr[ind]) -> height;
+	}
 }
 
 void Preorder(Node * arr, int ind)
 {
 	printf("%d ", ind);
-
-	//printf("\nlc = %d\n", (&arr[ind]) -> lc);
-	//printf("rc = %d\n", (&arr[ind]) -> rc);
 
 	if ((&arr[ind]) -> lc != -1)
 		Preorder(arr, (&arr[ind]) -> lc);
