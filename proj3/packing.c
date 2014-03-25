@@ -163,7 +163,7 @@ void Find_Coords(Coord * crd, Node * arr, int ind, double * x_tot, double * y_to
 		Find_Coords(crd, arr, (&arr[ind]) -> lc, x_tot, y_tot);
 		Find_Coords(crd, arr, (&arr[ind]) -> rc, x_tot, y_tot);
 	}
-	if (((&arr[ind]) -> cut != 'V') || ((&arr[ind]) -> cut != 'H'))
+	if (((&arr[ind]) -> cut != 'V') && ((&arr[ind]) -> cut != 'H'))
 	{
 		printf("%d ", ind);
 		(&crd[ind]) -> x = *x_tot;
@@ -176,7 +176,7 @@ void Find_Coords(Coord * crd, Node * arr, int ind, double * x_tot, double * y_to
 		Find_Coords(crd, arr, (&arr[ind]) -> rc, x_tot, y_tot);
 		Find_Coords(crd, arr, (&arr[ind]) -> lc, x_tot, y_tot);
 	}
-	if (((&arr[ind]) -> cut != 'V') || ((&arr[ind]) -> cut != 'H'))
+	if (((&arr[ind]) -> cut != 'V') && ((&arr[ind]) -> cut != 'H'))
 	{
 		printf("%d ", ind);
 		(&crd[ind]) -> x = *x_tot;
