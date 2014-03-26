@@ -19,7 +19,10 @@ typedef struct _coord
 
 Node * Load_File(char * Filename, int * num_b, int * num_n); //store nodes in array
 Coord * Pack(Node * arr, int size, int num_b, double * x_tot, double * y_tot);
-void Find_Coords(Coord * crd, Node * arr, int ind, double * x_tot, double * y_tot);
+void Find_Coords1(Coord * crd, Node * arr, int ind, double * x_tot, double * max_h);
+void Find_Coords2(Coord * crd, Node * arr, int ind, double * x_tot, double * max_h, double yt);
+void Find_Coords3(Coord * crd, Node * arr, int ind, double * x_tot, double * max_h, double yt);
+void Find_Coords4(Coord * crd, Node * arr, int ind, double * x_tot, double * max_h, double yt);
 void Preorder(Node * arr, int ind);
 void Inorder(Node * arr, int ind);
 void Postorder(Node * size, int ind);

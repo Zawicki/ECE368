@@ -102,7 +102,7 @@ Coord * Pack(Node * arr, int size, int num_b, double * x_tot, double * y_tot)
 	if (size < 1)
 		return NULL;
 	
-	Coord * crd = malloc(sizeof(Coord) * (num_b + 1));
+	Coord * crd = malloc(sizeof(Coord) * (size + 1));
 	
 	if (size == 1)
 	{
@@ -123,7 +123,32 @@ Coord * Pack(Node * arr, int size, int num_b, double * x_tot, double * y_tot)
 	Postorder(arr, size);
 
 	printf("\n\nCoord Order:  ");
-	Find_Coords(crd, arr, size, x_tot, y_tot);
+	double xt = 0;
+//	double yt = 0;
+	double max_h = 0;
+	Find_Coords1(crd, arr, size, x_tot, &max_h);
+
+	*y_tot += max_h;
+	max_h = 0;
+
+	Find_Coords2(crd, arr, size, &xt, &max_h, *y_tot);
+
+	*y_tot += max_h;
+	max_h = 0;
+	if (xt > *x_tot)
+		*x_tot = xt;
+
+	Find_Coords3(crd, arr, size, &xt, &max_h, *y_tot);
+	
+	*y_tot += max_h;
+	max_h = 0;
+	if (xt > *x_tot)
+		*x_tot = xt;
+
+	Find_Coords4(crd, arr, size, &xt, &max_h, *y_tot);
+	*y_tot += max_h;
+	if (xt > *x_tot)
+		*x_tot = xt;
 
 	printf("\n\nWidth:  %le", *x_tot);
 	printf("\nHeight:  %le", *y_tot);
@@ -134,55 +159,109 @@ Coord * Pack(Node * arr, int size, int num_b, double * x_tot, double * y_tot)
 	return crd;
 }
 
-void Find_Coords(Coord * crd, Node * arr, int ind, double * x_tot, double * y_tot)
+void Find_Coords1(Coord * crd, Node * arr, int ind, double * x_tot, double * max_h)
 {	
-/*	if ((&arr[ind]) -> cut == 'V')
+//	printf("%d ", ind);
+	if ((&arr[ind]) -> cut == 'V')
 	{
-		Find_Coords(crd, arr, (&arr[ind]) -> lc, x_tot, y_tot);
-		Find_Coords(crd, arr, (&arr[ind]) -> rc, x_tot, y_tot);
+		Find_Coords1(crd, arr, (&arr[ind]) -> lc, x_tot, max_h);
+		Find_Coords1(crd, arr, (&arr[ind]) -> rc, x_tot, max_h);
 	}
 	else if ((&arr[ind]) -> cut == 'H')
 	{
-		Find_Coords(crd, arr, (&arr[ind]) -> rc, x_tot, y_tot);
-		Find_Coords(crd, arr, (&arr[ind]) -> lc, x_tot, y_tot);
+		Find_Coords1(crd, arr, (&arr[ind]) -> rc, x_tot, max_h);
 	}
 	else
 	{
 		printf("%d ", ind);
 		(&crd[ind]) -> x = *x_tot;
-		(&crd[ind]) -> y = *y_tot;
+		(&crd[ind]) -> y = 0;
 
 		if ((&arr[(&arr[ind]) -> par]) -> cut == 'V')
 			*x_tot += (&arr[ind]) -> width;
-		if ((&arr[(&arr[ind]) -> par]) -> cut == 'H')
-			*y_tot += (&arr[ind]) -> height;
+	
+		if (*max_h < (&arr[ind]) -> height)
+			*max_h = (&arr[ind]) -> height;
 	}
-*/
+}
+
+void Find_Coords2(Coord * crd, Node * arr, int ind, double * x_tot, double * max_h, double yt)
+{
 	if ((&arr[ind]) -> cut == 'V')
 	{
-		Find_Coords(crd, arr, (&arr[ind]) -> lc, x_tot, y_tot);
-		Find_Coords(crd, arr, (&arr[ind]) -> rc, x_tot, y_tot);
+		Find_Coords2(crd, arr, (&arr[ind]) -> lc, x_tot, max_h, yt);
 	}
-	if (((&arr[ind]) -> cut != 'V') && ((&arr[ind]) -> cut != 'H'))
+	else if ((&arr[ind]) -> cut == 'H')
+	{
+		if ((&arr[(&arr[ind]) -> par]) -> cut != 'V')
+			Find_Coords2(crd, arr, (&arr[ind]) -> rc, x_tot, max_h, yt);
+		if ((&arr[(&arr[ind]) -> par]) -> cut != 'H' && (&arr[ind]) -> par != -1)
+			Find_Coords2(crd, arr, (&arr[ind]) -> lc, x_tot, max_h, yt);
+	}
+	else
 	{
 		printf("%d ", ind);
 		(&crd[ind]) -> x = *x_tot;
-		(&crd[ind]) -> y = *y_tot;
-		
-		*x_tot += (&arr[ind]) -> width;
+		(&crd[ind]) -> y = yt;
+
+		if ((&arr[(&arr[ind]) -> par]) -> cut == 'V')
+			*x_tot += (&arr[ind]) -> width;
+	
+		if (*max_h < (&arr[ind]) -> height)
+			*max_h = (&arr[ind]) -> height;
 	}
-	if ((&arr[ind]) -> cut == 'H')
+}
+
+void Find_Coords3(Coord * crd, Node * arr, int ind, double * x_tot, double * max_h, double yt)
+{
+	if ((&arr[ind]) -> cut == 'V')
 	{
-		Find_Coords(crd, arr, (&arr[ind]) -> rc, x_tot, y_tot);
-		Find_Coords(crd, arr, (&arr[ind]) -> lc, x_tot, y_tot);
+		Find_Coords3(crd, arr, (&arr[ind]) -> lc, x_tot, max_h, yt);
+		Find_Coords3(crd, arr, (&arr[ind]) -> rc, x_tot, max_h, yt);
 	}
-	if (((&arr[ind]) -> cut != 'V') && ((&arr[ind]) -> cut != 'H'))
+	else if ((&arr[ind]) -> cut == 'H')
+	{
+		if ((&arr[ind]) -> par != -1)
+			Find_Coords3(crd, arr, (&arr[ind]) -> rc, x_tot, max_h, yt);
+		if ((&arr[(&arr[ind]) -> par]) -> cut != 'H')
+			Find_Coords3(crd, arr, (&arr[ind]) -> lc, x_tot, max_h, yt);
+	}
+	else
 	{
 		printf("%d ", ind);
 		(&crd[ind]) -> x = *x_tot;
-		(&crd[ind]) -> y = *y_tot;
-		
-		*y_tot += (&arr[ind]) -> height;
+		(&crd[ind]) -> y = yt;
+
+		if ((&arr[(&arr[ind]) -> par]) -> cut == 'V')
+			*x_tot += (&arr[ind]) -> width;
+	
+		if (*max_h < (&arr[ind]) -> height)
+			*max_h = (&arr[ind]) -> height;
+	}
+}
+
+void Find_Coords4(Coord * crd, Node * arr, int ind, double * x_tot, double * max_h, double yt)
+{
+	if ((&arr[ind]) -> cut == 'V')
+	{
+		Find_Coords4(crd, arr, (&arr[ind]) -> lc, x_tot, max_h, yt);
+		Find_Coords4(crd, arr, (&arr[ind]) -> rc, x_tot, max_h, yt);
+	}
+	else if ((&arr[ind]) -> cut == 'H')
+	{
+		Find_Coords4(crd, arr, (&arr[ind]) -> lc, x_tot, max_h, yt);
+	}
+	else
+	{
+		printf("%d ", ind);
+		(&crd[ind]) -> x = *x_tot;
+		(&crd[ind]) -> y = yt;
+
+		if ((&arr[(&arr[ind]) -> par]) -> cut == 'V')
+			*x_tot += (&arr[ind]) -> width;
+	
+		if (*max_h < (&arr[ind]) -> height)
+			*max_h = (&arr[ind]) -> height;
 	}
 }
 
