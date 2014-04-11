@@ -12,14 +12,25 @@ int main (int argc, char * * argv)
 	}
 
 	char * in_file = argv[1];
-	//char * out_file = argv[2];
+	char * out_file = argv[2];
 
 	// arr is an array implementation of a binary tree
 	// the root node is the node of index num_n
 	Node * head = Load_File(in_file);
 	printf("\nLoading Complete\n");
 	Postorder(head);
-	printf("\n\n");
+	
+	Find_Area(head);
+	printf("\n\nWidth: %le\nHeight: %le\n\n", head -> width, head -> height);
+	
+	//double x_new = head -> width;
+	double y_prev = head -> height;
+	Find_YCoords(head, &y_prev);
+
+	FILE * f = fopen(out_file, "w");
+	Save_File(f, head);
+	fclose(f);
+
 	/*double x_tot = 0;
 	double y_tot = 0;
 
@@ -66,6 +77,8 @@ Node * Load_File(char * Filename)
 			n -> cut = ch;
 			n -> width = 0;
 			n -> height = 0;
+			n -> x = 0;
+			n -> y = 0;
 				
 			//Set the parents of the cut nodes children
 			n -> rc -> par = n;
@@ -83,6 +96,8 @@ Node * Load_File(char * Filename)
 			n -> cut = '-';
 			n -> width = w;
 			n -> height = h;
+			n -> x = 0;
+			n -> y = 0;
 			s = Stack_push(s, n);
 		//	printf("\nWidth = %le, Height = %le\n", n -> width, n -> height);
 		}
@@ -116,24 +131,117 @@ Stack * Stack_pop(Stack * s)
 	return st;
 }
 
-/*void Save_File(char * Filename, Node * arr, Coord * crd, int num_b)
+void Save_File(FILE * f, Node * h)
 {
-	FILE * f = fopen(Filename, "w");
-
-	if (f == NULL)
+	if (h == NULL)
 		return;
 
-	fprintf(f, "%d\n", num_b);
+	Save_File(f, h -> lc);
+	Save_File(f, h -> rc);
+	
+	if (h -> cut == '-')
+		fprintf(f, "%le %le %le %le\n", h -> width, h -> height, h -> x, h -> y);
+}
 
-	int i = 1;
-	while (i <= num_b)
+void Find_Area(Node * h)
+{
+	if (h -> cut == 'V')
 	{
-		fprintf(f, "%d %le %le %le %le\n", i, (&arr[i]) -> width, (&arr[i]) -> height, (&crd[i]) -> x, (&crd[i]) -> y);
-		i++;
+		Find_Area(h -> lc);
+		Find_Area(h -> rc);
+		
+		h -> width = h -> lc -> width + h -> rc -> width;
+	
+		if (h -> lc -> height >= h -> rc -> height)
+			h -> height = h -> lc -> height;
+		else
+			h -> height = h -> rc -> height;
 	}
+	else if (h -> cut == 'H')
+	{
+		Find_Area(h -> rc);
+		Find_Area(h -> lc);
 
-	fclose(f);
+		h -> height = h -> lc -> height + h -> rc -> height;
+
+		if (h -> lc -> width >= h -> rc -> width)
+			h -> width = h -> lc -> width;
+		else
+			h -> width = h -> rc -> width;
+	}
+	else
+		return;
+}
+
+/*void Find_XCoords(Node * h, double * x_new)
+{
+	if (h == NULL)
+		return;
+
+	Find_Coords(h -> lc, x_new, y_prev);
+	Find_Coords(h -> rc, x_new, y_prev);
+	
+	if (h -> cut == '-')
+	{
+		if (h -> par -> cut == 'V')
+		{
+			//find x coord
+			if (h -> par -> lc == h)
+			{
+				h -> x = *x_new;
+				*x_new = h -> x + h -> width;
+				
+			}
+			else
+			{
+				h -> x = *x_new;
+				*x_new = h -> x + h -> width;
+			}			
+
+		}
+		else
+		{
+			//find x coord
+			if (h -> par -> width - *x_new > 0)
+				h -> x = *x_new;
+			else
+				h -> x = 0;
+		}
+	}
 }*/
+
+void Find_YCoords(Node * h, double * y_prev)
+{
+	if (h == NULL)
+		return;
+
+	Find_YCoords(h -> lc, y_prev);
+	Find_YCoords(h -> rc, y_prev);
+	
+	if (h -> cut == '-')
+	{
+		if (h -> par -> cut == 'V')
+		{
+			if (*y_prev - h -> par -> height > 0)
+				h -> y = *y_prev - h -> par -> height;
+			else
+				h -> y = 0;
+		}
+		else
+		{
+			if (h -> par -> lc == h)
+			{
+				h -> y = *y_prev - h -> height;
+				*y_prev = h -> y;
+			}
+			else
+			{
+				h -> y = *y_prev - h -> par -> height;
+				*y_prev = h -> y;
+			}
+		}
+	}
+}
 
 void Preorder(Node * h)
 {

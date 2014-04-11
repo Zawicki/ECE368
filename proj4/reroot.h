@@ -9,6 +9,8 @@ typedef struct _node
 	char cut;
 	double width;
 	double height;
+	double x;
+	double y;
 }Node;
 
 typedef struct _stack
@@ -17,17 +19,14 @@ typedef struct _stack
 	Node * n;
 }Stack;
 
-typedef struct _coord
-{
-	double x;
-	double y;
-}Coord;
-
 Node * Load_File(char * Filename); //store nodes in array
 Stack * Stack_push(Stack * s, Node * t);
 Stack * Stack_pop(Stack * s);
+void Find_Area(Node * h);
+void Find_YCoords(Node * h, double * y_prev);
+void Find_XCoords(Node * h, double * x_new);
 void Preorder(Node * head);
 void Inorder(Node * head);
 void Postorder(Node * head);
-//void Save_File(char * Filename, Node * arr, Coord * crd, int num_b);
+void Save_File(FILE * f, Node * h);
 #endif
