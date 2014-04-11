@@ -46,6 +46,8 @@ int main (int argc, char * * argv)
 	Save_File(f, head);
 	fclose(f);
 
+	Tree_Destroy(head);
+
 	return EXIT_SUCCESS;
 }
 
@@ -133,6 +135,16 @@ Stack * Stack_pop(Stack * s)
 	free(s);
 
 	return st;
+}
+
+void Tree_Destroy(Node * h)
+{
+	if (h == NULL)
+		return;
+
+	Tree_Destroy(h -> lc);
+	Tree_Destroy(h -> rc);
+	free(h);
 }
 
 void Save_File(FILE * f, Node * h)

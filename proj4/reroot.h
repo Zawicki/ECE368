@@ -30,4 +30,5 @@ void Preorder(Node * head);
 void Inorder(Node * head);
 void Postorder(Node * head, double * x, double * y);
 void Save_File(FILE * f, Node * h);
+void Tree_Destroy(Node * h);
 #endif
