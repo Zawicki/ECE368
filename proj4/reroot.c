@@ -23,8 +23,10 @@ int main (int argc, char * * argv)
 	Find_Area(head);
 	printf("\n\nWidth: %le\nHeight: %le\n\n", head -> width, head -> height);
 	
-	//double x_new = head -> width;
+	double x_new = 0;
 	double y_prev = head -> height;
+	
+	Find_XCoords(head, &x_new);
 	Find_YCoords(head, &y_prev);
 
 	FILE * f = fopen(out_file, "w");
@@ -173,42 +175,49 @@ void Find_Area(Node * h)
 		return;
 }
 
-/*void Find_XCoords(Node * h, double * x_new)
+void Find_XCoords(Node * h, double * x_new)
 {
 	if (h == NULL)
 		return;
 
-	Find_Coords(h -> lc, x_new, y_prev);
-	Find_Coords(h -> rc, x_new, y_prev);
+	if (h -> par != NULL)
+	{
+		if (h -> par -> cut == 'H' && h -> par -> rc == h)
+			*x_new = 0;
+	}
+
+	Find_XCoords(h -> lc, x_new);
+	Find_XCoords(h -> rc, x_new);
 	
 	if (h -> cut == '-')
 	{
 		if (h -> par -> cut == 'V')
 		{
-			//find x coord
 			if (h -> par -> lc == h)
-			{
 				h -> x = *x_new;
-				*x_new = h -> x + h -> width;
-				
-			}
 			else
-			{
-				h -> x = *x_new;
-				*x_new = h -> x + h -> width;
-			}			
-
+				h -> x = h -> par -> width - h -> width;
+			*x_new = *x_new + h -> width;
 		}
 		else
 		{
-			//find x coord
-			if (h -> par -> width - *x_new > 0)
-				h -> x = *x_new;
+			if (h -> par -> lc -> width > h -> par -> rc -> width)
+			{
+				if (*x_new - h -> par -> lc -> width > 0)
+					h -> x = *x_new - h -> par -> lc -> width;
+				else
+					h -> x = 0;
+			}
 			else
-				h -> x = 0;
+			{
+				if (*x_new - h -> par -> rc -> width > 0)
+					h -> x = *x_new - h -> par -> rc -> width;
+				else
+					h -> x = 0;
+			}
 		}
 	}
-}*/
+}
 
 void Find_YCoords(Node * h, double * y_prev)
 {
