@@ -17,32 +17,34 @@ int main (int argc, char * * argv)
 	// arr is an array implementation of a binary tree
 	// the root node is the node of index num_n
 	Node * head = Load_File(in_file);
-	printf("\nLoading Complete\n");
-	Postorder(head);
-	
+
+	clock_t pack_t = clock();
 	Find_Area(head);
-	printf("\n\nWidth: %le\nHeight: %le\n\n", head -> width, head -> height);
-	
+
 	double x_new = 0;
 	double y_prev = head -> height;
+
+	Find_Coords(head, &x_new, &y_prev);
+	pack_t = clock() - pack_t;	
+
+	double x = -1;
+	double y = -1;
+
+	printf("\nPreorder: \n");
+	Preorder(head);
+	printf("\n\nInorder: \n");
+	Inorder(head);
+	printf("\n\nPostorder: \n");	
+	Postorder(head, &x, &y);
 	
-	Find_XCoords(head, &x_new);
-	Find_YCoords(head, &y_prev);
+	printf("\n\nWidth: %le\nHeight: %le\n", head -> width, head -> height);
+	printf("\nX-coordinate: %le\nY-coordinate:%le\n", x, y);
+	printf("\nElapsed Time:  %le\n\n", ((double) pack_t) / CLOCKS_PER_SEC);
+	
 
 	FILE * f = fopen(out_file, "w");
 	Save_File(f, head);
 	fclose(f);
-
-	/*double x_tot = 0;
-	double y_tot = 0;
-
-	clock_t pack_t = clock();
-	Coord * crd = Pack(arr, num_n, num_b, &x_tot, &y_tot);
-	pack_t = clock() - pack_t;*/
-
-	//printf("\n\nElapsed Time:  %le\n\n", ((double) pack_t) / CLOCKS_PER_SEC);
-
-	//Save_File(out_file, arr, crd, num_b);
 
 	return EXIT_SUCCESS;
 }
@@ -175,7 +177,7 @@ void Find_Area(Node * h)
 		return;
 }
 
-void Find_XCoords(Node * h, double * x_new)
+void Find_Coords(Node * h, double * x_new, double * y_prev)
 {
 	if (h == NULL)
 		return;
@@ -186,21 +188,29 @@ void Find_XCoords(Node * h, double * x_new)
 			*x_new = 0;
 	}
 
-	Find_XCoords(h -> lc, x_new);
-	Find_XCoords(h -> rc, x_new);
+	Find_Coords(h -> lc, x_new, y_prev);
+	Find_Coords(h -> rc, x_new, y_prev);
 	
 	if (h -> cut == '-')
 	{
 		if (h -> par -> cut == 'V')
 		{
+			//x coords
 			if (h -> par -> lc == h)
 				h -> x = *x_new;
 			else
 				h -> x = h -> par -> width - h -> width;
 			*x_new = *x_new + h -> width;
+			
+			//y coords
+			if (*y_prev - h -> par -> height > 0)
+				h -> y = *y_prev - h -> par -> height;
+			else
+				h -> y = 0;
 		}
 		else
 		{
+			//x coords
 			if (h -> par -> lc -> width > h -> par -> rc -> width)
 			{
 				if (*x_new - h -> par -> lc -> width > 0)
@@ -215,11 +225,23 @@ void Find_XCoords(Node * h, double * x_new)
 				else
 					h -> x = 0;
 			}
+			
+			//y coords
+			if (h -> par -> lc == h)
+			{
+				h -> y = *y_prev - h -> height;
+				*y_prev = h -> y;
+			}
+			else
+			{
+				h -> y = *y_prev - h -> par -> height;
+				*y_prev = h -> y;
+			}
 		}
 	}
 }
 
-void Find_YCoords(Node * h, double * y_prev)
+/*void Find_YCoords(Node * h, double * y_prev)
 {
 	if (h == NULL)
 		return;
@@ -250,7 +272,7 @@ void Find_YCoords(Node * h, double * y_prev)
 			}
 		}
 	}
-}
+}*/
 
 void Preorder(Node * h)
 {
@@ -277,15 +299,26 @@ void Inorder(Node * h)
 	Inorder(h -> rc);
 }
 
-void Postorder(Node * h)
+void Postorder(Node * h, double * x, double * y)
 {
 	if (h == NULL)
 		return;
 
-	Postorder(h -> lc);
-	Postorder(h -> rc);
+	Postorder(h -> lc, x, y);
+	Postorder(h -> rc, x, y);
 	if (h -> cut == 'V' || h -> cut == 'H')
 		printf("%c", h -> cut);
 	else
+	{
 		printf("(%le,%le)", h -> width, h-> height);
+		if (*x == -1)
+		{
+			*x = h -> x;
+			*y = h -> y;
+		}
+	}
 }
+
+
+
+
